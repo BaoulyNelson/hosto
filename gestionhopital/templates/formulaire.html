@@ -1,0 +1,28 @@
+{% extends "base.html" %} {% block title %}Recherche{% endblock %} {% block
+content %} {% load static %}
+
+<link rel="stylesheet" href="{% static 'css/recherche.css' %}" />
+
+<form
+  method="GET"
+  action="{% url 'recherche' %}"
+  id="search-form"
+  style="display: none"
+>
+  <div class="input-group mb-3">
+    <input
+      type="text"
+      class="form-control"
+      name="q"
+      placeholder="Rechercher..."
+      aria-label="Rechercher"
+      value="{{ request.GET.q }}"
+    />
+    <div class="input-group-append">
+      <button class="btn btn-primary" type="submit">Rechercher</button>
+    </div>
+  </div>
+</form>
+<a href="{% url 'index' %}" class="btn btn-secondary">Retour à l'Accueil</a>
+
+{% endblock %}

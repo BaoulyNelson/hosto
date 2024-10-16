@@ -1,0 +1,173 @@
+/* Styles de base */
+body {
+    background-color: #f8f9fa; /* Fond clair et neutre */
+    font-family: 'Roboto', sans-serif; /* Police lisible */
+    color: #333; /* Texte sombre pour une bonne lisibilité */
+    line-height: 1.6;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(to right, #4CAF50, #8BC34A); /* Couleurs vertes apaisantes */
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
+/* Navigation */
+.navbar {
+    background-color: #4CAF50; /* Couleur de la barre de navigation */
+    padding: 10px;
+}
+
+.navbar-brand, .navbar-nav .nav-link {
+    color: white !important; /* Texte de la navigation en blanc */
+    font-weight: bold;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #e8f5e9 !important; /* Couleur au survol */
+}
+
+.navbar-toggler {
+    border-color: white;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' fill='white'%3E%3Cpath stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.navbar-toggler:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Fond clair au survol */
+}
+
+/* Conteneur principal */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.list-group-item {
+    text-align: center;
+}
+
+
+/* Section d'Information */
+.section-info {
+    background-color: #e3f2fd; /* Bleu très doux et apaisant */
+    padding: 40px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère */
+}
+
+/* Services */
+.service {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+
+.service:hover {
+    transform: scale(1.05); /* Légère animation au survol */
+}
+
+.icon-service {
+    width: 50px;
+    margin-bottom: 10px;
+}
+
+/* Cartes d'information */
+.card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Animation au survol */
+}
+
+/* Boutons */
+.btn-cta {
+    background-color: #0288D1; /* Bleu pour la confiance */
+    color: white;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.btn-cta:hover {
+    background-color: #0277BD; /* Couleur plus foncée au survol */
+}
+
+/* Bannière d'urgence */
+.urgent-banner {
+    background-color: #d32f2f; /* Rouge vif pour attirer l'attention */
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+/* Formulaire de contact */
+.contact-form {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.contact-form input, .contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+
+/* Pied de page */
+footer {
+    background-color: #2e7d32; /* Vert foncé, couleur apaisante et professionnelle */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: 40px;
+}
+
+footer a {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+footer a:hover {
+    color: #e8f5e9;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .container {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .hero {
+        padding: 20px 10px;
+    }
+}

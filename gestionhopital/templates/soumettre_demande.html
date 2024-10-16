@@ -1,0 +1,10 @@
+{% extends "base.html" %} {% block title %}Demande de consultation{% endblock %}
+{% block content %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/formulaire.css' %}" />
+<h2>Soumettre une demande de consultation</h2>
+<form method="POST">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Envoyer la demande</button>
+</form>
+<a href="{% url 'index' %}" class="btn btn-secondary">Retour à l'Accueil</a>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Réinitialisation{% endblock %}
+  
+    {% block content %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/comptes/email_reinitialisation.css' %}">
+
+<div class="email-container">
+    <h1 class="email-title">Réinitialisation de votre mot de passe</h1>
+    <p class="email-greeting">Bonjour {{ user.username }},</p>
+    <p class="email-message">Pour réinitialiser votre mot de passe, veuillez cliquer sur le lien ci-dessous :</p>
+    <p><a class="reset-link" href="{{ reset_link }}">{{ reset_link }}</a></p>
+    <p class="email-footer">Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet email.</p>
+</div>
+{% endblock %}

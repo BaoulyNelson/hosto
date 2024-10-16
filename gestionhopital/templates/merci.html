@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Remerciement{% endblock %}
+  
+    {% block content %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/merci.css' %}">
+
+<div class="container">
+    <img src="{% static 'images/success-icon.jpg' %}" alt="Succès">
+    <h2>Merci pour votre demande</h2>
+    <p>Nous avons bien reçu votre demande de consultation et nous vous contacterons sous peu.</p>
+</div>
+<a href="{% url 'index' %}" class="btn btn-secondary">Retour à l'Accueil</a>
+{% endblock %}

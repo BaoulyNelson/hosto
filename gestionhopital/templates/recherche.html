@@ -1,0 +1,108 @@
+{% extends "base.html" %} {% block title %}Recherche {% endblock %} {% block content %} 
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/recherche.css' %}" />
+
+<div class="container mt-5">
+  <h1 class="text-center text-primary mb-4">Résultats de Recherche</h1>
+
+  <!-- Formulaire de recherche -->
+  <form method="GET" action="{% url 'recherche' %}" class="mb-5">
+    <div class="input-group">
+      <input
+        type="text"
+        class="form-control form-control-lg"
+        name="q"
+        placeholder="Rechercher..."
+        aria-label="Rechercher"
+        value="{{ query }}"
+      />
+      <div class="input-group-append">
+        <button class="btn btn-primary btn-lg" type="submit">Rechercher</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Résultats Patients -->
+  <h2 class="text-secondary">Patients</h2>
+  <ul class="list-group mb-5">
+    {% for patient in patients %}
+    <li
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <span>{{ patient.nom }} {{ patient.prenom }}</span>
+      <span class="badge badge-primary badge-pill">{{ patient.tel }}</span>
+    </li>
+    {% empty %}
+    <li class="list-group-item text-danger">Aucun patient trouvé.</li>
+    {% endfor %}
+  </ul>
+
+  <!-- Résultats Médecins -->
+  <h2 class="text-secondary">Médecins</h2>
+  <ul class="list-group mb-5">
+    {% for medecin in medecins %}
+    <li
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <span>{{ medecin.nom }} {{ medecin.prenom }}</span>
+      <span class="badge badge-success badge-pill"
+        >{{ medecin.specialite }}</span
+      >
+    </li>
+    {% empty %}
+    <li class="list-group-item text-danger">Aucun médecin trouvé.</li>
+    {% endfor %}
+  </ul>
+
+  <!-- Résultats Consultations -->
+  <h2 class="text-secondary">Consultations</h2>
+  <ul class="list-group">
+    {% for consultation in consultations %}
+    <li class="list-group-item">
+      <strong>Patient :</strong> {{ consultation.idpatient }}<br />
+      <strong>Médecin :</strong> {{ consultation.idmedecin }}<br />
+      <strong>Diagnostique :</strong> {{ consultation.diagnostique }}<br />
+      <small class="text-muted"
+        >Date : {{ consultation.date_consultation }}</small
+      >
+    </li>
+    {% empty %}
+    <li class="list-group-item text-danger">Aucune consultation trouvée.</li>
+    {% endfor %}
+  </ul>
+
+  <!-- Résultats Prescriptions -->
+  <h2 class="text-secondary">Prescriptions</h2>
+  <ul class="list-group mb-5">
+    {% for prescription in prescriptions %}
+    <li
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <span>ID Consultation : {{ prescription.idconsultation }}</span>
+      <span>{{ prescription.prescription }}</span>
+    </li>
+    {% empty %}
+    <li class="list-group-item text-danger">Aucune prescription trouvée.</li>
+    {% endfor %}
+  </ul>
+
+  <!-- Résultats Dossiers -->
+  <h2 class="text-secondary">Dossiers</h2>
+  <ul class="list-group mb-5">
+    {% for dossier in dossiers %}
+    <li
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <span>Code : {{ dossier.code }}</span>
+      <span>ID Consultation : {{ dossier.idconsultation }}</span>
+      <span>Date d'Enregistrement : {{ dossier.date_enregistrement }}</span>
+    </li>
+    {% empty %}
+    <li class="list-group-item text-danger">Aucun dossier trouvé.</li>
+    {% endfor %}
+  </ul>
+<a href="{% url 'index' %}" class="btn btn-secondary">Retour à l'Accueil</a>
+</div>
+
+{% endblock %}

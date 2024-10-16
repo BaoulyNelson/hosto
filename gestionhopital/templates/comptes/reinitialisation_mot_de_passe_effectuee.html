@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Verification mot de passe{% endblock %}
+  
+    {% block content %}
+
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/comptes/confirmation_mot_de_passe_effectuee.css' %}">
+
+<div class="confirmation-container">
+    <h2 class="confirmation-title">Vérifiez votre email</h2>
+    <p class="confirmation-message">Un email a été envoyé à votre adresse contenant un lien pour réinitialiser votre mot de passe.</p>
+    <p class="confirmation-instructions">Si vous ne le voyez pas, vérifiez votre dossier de spam.</p>
+    <p><a href="{% url 'connexion' %}" class="return-link">Retourner à la connexion</a>.</p>
+</div>
+{% endblock %}

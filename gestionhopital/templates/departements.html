@@ -1,0 +1,20 @@
+{% extends "base.html" %} {% block title %}Départements
+{% endblock %} {% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/departement.css' %}" />
+
+<div class="departement-container">
+  <h1>Départements de l'Hôpital</h1>
+  <ul class="departement-list">
+    {% for departement in departements %}
+    <li class="departement-item">
+      <h2>{{ departement.nom }}</h2>
+      <p>{{ departement.description }}</p>
+      <p><strong>Services:</strong> {{ departement.services }}</p>
+    </li>
+    {% empty %}
+    <li class="departement-item">Aucun département trouvé.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

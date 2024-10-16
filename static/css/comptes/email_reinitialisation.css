@@ -1,0 +1,30 @@
+.email-container {
+    max-width: 600px; /* Limite la largeur de l'email */
+    margin: 20px auto; /* Centre le conteneur */
+    padding: 20px; /* Ajoute de l'espace à l'intérieur */
+    border: 1px solid #ddd; /* Ajoute une bordure légère */
+    border-radius: 5px; /* Arrondit les coins */
+    font-family: Arial, sans-serif; /* Définit la police */
+    background-color: #f9f9f9; /* Couleur de fond douce */
+}
+
+.email-title {
+    color: #333; /* Couleur du titre */
+    text-align: center; /* Centre le titre */
+}
+
+.email-greeting,
+.email-message,
+.email-footer {
+    color: #555; /* Couleur du texte */
+}
+
+.reset-link {
+    color: #007bff; /* Couleur du lien */
+    text-decoration: none; /* Enlève le soulignement */
+    font-weight: bold; /* Rend le texte du lien plus audacieux */
+}
+
+.reset-link:hover {
+    text-decoration: underline; /* Souligne le lien au survol */
+}

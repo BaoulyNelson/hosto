@@ -1,0 +1,20 @@
+
+{% block title %}{% endblock %}
+  
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/comptes/reinitialisation_mot_de_passe.css' %}">
+
+<div class="password-reset-container">
+  <h2 class="title">Réinitialisation du mot de passe</h2>
+  <p class="description">Entrez votre adresse email pour recevoir un lien de réinitialisation de mot de passe.</p>
+  
+  <form method="post" class="password-reset-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn-reset">Envoyer le lien de réinitialisation</button>
+  </form>
+  
+  <p class="login-reminder">Vous vous souvenez de votre mot de passe ? 
+    <a href="{% url 'connexion' %}" class="login-link">Connectez-vous ici</a>.
+  </p>
+</div>

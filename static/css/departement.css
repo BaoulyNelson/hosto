@@ -1,0 +1,76 @@
+/* Style général pour le corps */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Container principal pour centrer le contenu */
+.departement-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Style du titre principal */
+.departement-container h1 {
+    color: #2c3e50;
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+/* Style pour la liste des départements */
+.departement-list {
+    list-style: none;
+    padding: 0;
+}
+
+/* Style pour chaque département */
+.departement-item {
+    margin-bottom: 40px;
+    padding: 20px;
+    border-bottom: 1px solid #dcdcdc;
+}
+
+/* Style des titres des départements */
+.departement-item h2 {
+    color: #2980b9;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+/* Style pour la description des départements */
+.departement-item p {
+    font-size: 18px;
+    color: #555;
+}
+
+/* Style du texte pour les services */
+.departement-item strong {
+    color: #34495e;
+}
+
+/* Ajout d'une animation subtile */
+.departement-item {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeIn 0.4s forwards;
+    animation-delay: calc(0.1s * var(--i));
+}
+
+/* Animation fade-in pour les départements */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

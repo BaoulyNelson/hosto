@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Supprimer {{ type_entite }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm border-danger">
+        <div class="card-body">
+            <h1 class="text-danger">Supprimer {{ type_entite }}</h1>
+            <p class="lead">Êtes-vous sûr de vouloir supprimer <strong>{{ entite }}</strong> ? Cette action est irréversible.</p>
+
+            <form method="POST" class="mt-4">
+                {% csrf_token %}
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+                    <a href="{% url 'liste_entites' type_entite %}" class="btn btn-secondary">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier {{ type_entite }}{% endblock %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/formulaire.css' %}">
+
+<div class="container">
+    <h1>Modifier {{ type_entite }}</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Enregistrer les modifications</button>
+    </form>
+     <!-- Correction : on passe 'type_entite' à l'URL -->
+     <a href="{% url 'liste_entites' type_entite %}"class="btn btn-warning">annuler </a>
+</div>
+{% endblock %}

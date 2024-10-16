@@ -1,0 +1,49 @@
+
+#commentaires {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.commentaire {
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.commentaire:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.commentaire p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.commentaire strong {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.commentaire small {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #888;
+}
+
+/* Style pour le message vide */
+#commentaires p {
+    font-style: italic;
+    text-align: center;
+    color: #888;
+}

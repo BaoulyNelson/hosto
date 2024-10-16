@@ -1,0 +1,130 @@
+
+{% block title %}{% endblock %}
+  
+
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/comptes/inscription.css' %}">
+
+<div class="signup-container">
+    <!-- Logo (si tu en as un, sinon tu peux retirer cette section) -->
+    <div class="logo-container">
+        <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo">
+    </div>
+
+    <div class="signup-form">
+        <h2>Créer un compte</h2>
+
+        <!-- Bloc pour afficher les messages -->
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li class="{% if message.tags %} {{ message.tags }} {% endif %}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <!-- Formulaire d'inscription -->
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Champ Prénom -->
+            <div class="form-group">
+                {{ form.first_name.label_tag }}
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    <ul>
+                    {% for error in form.first_name.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <!-- Champ Nom -->
+            <div class="form-group">
+                {{ form.last_name.label_tag }}
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    <ul>
+                    {% for error in form.last_name.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <!-- Champ Nom d'utilisateur -->
+            <div class="form-group">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <ul>
+                    {% for error in form.username.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <!-- Champ Adresse email -->
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <ul>
+                    {% for error in form.email.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <!-- Champ Mot de passe -->
+            <div class="form-group">
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <ul>
+                    {% for error in form.password1.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <!-- Champ Confirmation du mot de passe -->
+            <div class="form-group">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <ul>
+                    {% for error in form.password2.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <!-- Affichage des erreurs générales -->
+            {% if form.non_field_errors %}
+            <ul>
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <!-- Bouton de soumission -->
+            <button type="submit" class="btn">S'inscrire</button>
+        </form>
+
+        <!-- Lien pour connexion -->
+        <div class="signup-link">
+            <a href="{% url 'connexion' %}">Déjà un compte ? Connectez-vous.</a>
+        </div>
+
+        <!-- Lien pour mot de passe oublié -->
+        <a href="{% url 'reinitialisation_mot_de_passe' %}" class="forgot-password">Mot de passe oublié ?</a>
+    </div>
+</div>
