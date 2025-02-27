@@ -1,6 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Supprimer le Commentaire{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/confirmer.css' %}">
+{% endblock %}
+
 
 {% block content %}
 <div class="container mt-5">

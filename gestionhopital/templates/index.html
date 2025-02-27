@@ -1,63 +1,8 @@
-{% extends "base.html" %} {% block title %}Bienvenue sur votre page d'accueil 
-{%endblock %} {% block content %} {% load static %}
-<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-<link rel="stylesheet" href="{% static 'css/commentaires.css' %}">
+{% extends "base.html" %} {% block title %}Baouly'S Hosto
+{%endblock %}  
+{% load static %}
+{% block content %}
 
-<nav class="navbar navbar-expand-lg">
-  <div class="container">
-    <a class="navbar-brand" href="{% url 'index' %}">Hôpital</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-toggle="collapse"
-      data-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'index' %}">Accueil</a>
-        </li>
-       
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'departements' %}">Départements</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'soumettre_demande' %}"
-            >Rendez-vous</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            href="{% url 'recherche' %}"
-            id="search-button"
-            aria-label="Rechercher"
-          >
-            <i class="fas fa-search"></i>
-          </a>
-        </li>
-        {% if user.is_authenticated %}
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            href="{% url 'deconnexion' %}"
-            title="Déconnexion"
-          >
-            <i class="fas fa-sign-out-alt" aria-label="Déconnexion"></i>
-          </a>
-        </li>
-
-        {% endif %}
-      </ul>
-    </div>
-  </div>
-</nav>
 
 <div class="container mt-5">
   <div class="hero">
@@ -114,43 +59,8 @@
   </ul>
 </div>
 
-<h2
-  style="
-    text-align: center;
-    font-family: Arial, sans-serif;
-    color: #333;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #007bff;
-    display: inline-block;
-    width: 100%;
-  "
->
-  Commentaires
-</h2>
-<div id="commentaires" class="commentaires-container">
-  {% for commentaire in commentaires %}
-  <div class="commentaire">
-    <p>
-      <strong>{{ commentaire.utilisateur.username }} a dit</strong>:
-      <span>{{ commentaire.texte }}</span>
-      <span class="commentaire-date">
-        <small
-          >Posté le {{ commentaire.date_postee|date:"D, d M Y H:i" }}</small
-        >
-      </span>
-    </p>
-    {% if request.user.is_superuser %}
-    <a
-      href="{% url 'supprimer_commentaire' commentaire.id %}"
-      class="btn btn-danger btn-sm"
-      >Supprimer</a
-    >
-    {% endif %}
-  </div>
-  {% empty %}
-  <p>Aucun commentaire disponible.</p>
-  {% endfor %}
-</div>
+{% include "partials/commentaires.html" %}
+
 
 <script src="{% static 'js/recherche.js' %}"></script>
 

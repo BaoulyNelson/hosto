@@ -1,14 +1,3 @@
-/* Style général */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
 /* Conteneur central */
 .password-reset-container {
@@ -19,6 +8,7 @@ body {
     max-width: 400px;
     width: 100%;
     text-align: center;
+    margin: 0 auto; /* Centre horizontalement le conteneur */
 }
 
 /* Titre */

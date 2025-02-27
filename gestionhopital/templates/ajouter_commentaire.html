@@ -2,9 +2,13 @@
 
 {% block title %}Ajouter commentaire{% endblock %}
   
-    {% block content %}
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/formulaire.css' %}">
+
+    {% block styles %}
+    <link rel="stylesheet" href="{% static 'css/demande.css' %}">
+{% endblock %}
+
+{% block content %}
 
     <h1>Ajouter un Commentaire</h1>
 

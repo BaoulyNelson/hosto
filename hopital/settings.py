@@ -12,15 +12,30 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from django.core.exceptions import ImproperlyConfigured
+from django.contrib.messages import constants as messages
+from dotenv import load_dotenv
+
+# Charger les variables d'environnement
+load_dotenv()
+
+# Fonction pour récupérer une variable d'environnement avec gestion d'erreur
+def get_env_variable(var_name, default=None, required=False):
+    value = os.getenv(var_name, default)
+    if required and value is None:
+        raise ImproperlyConfigured(f"La variable d'environnement {var_name} est manquante ! Vérifiez votre fichier .env.")
+    return value
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%-)ww+&mt0xfa@^601ykr@jw-$mhna(c7zz$g_!cdh6+37@fqd'
+# Récupération des variables d'environnement avec gestion d'erreur
+SECRET_KEY = get_env_variable('SECRET_KEY', required=True)
+DEBUG = get_env_variable('DEBUG', 'False').lower() in ['true', '1']
+ALLOWED_HOSTS = get_env_variable('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gestionhopital',
+    'django_countries',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +72,7 @@ ROOT_URLCONF = 'hopital.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Chemin vers le dossier des templates
+        'DIRS': [BASE_DIR / 'gestionhopital/templates'],  # Chemin vers le dossier des templates
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -74,17 +90,15 @@ WSGI_APPLICATION = 'hopital.wsgi.application'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Utiliser le backend DB pour les sessions
 
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+# Database configuration avec gestion des erreurs
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'gestionhopital',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': get_env_variable('DB_NAME', required=True),
+        'USER': get_env_variable('DB_USER', required=True),
+        'PASSWORD': get_env_variable('DB_PASSWORD', required=True),
+        'HOST': get_env_variable('DB_HOST', 'localhost'),
+        'PORT': get_env_variable('DB_PORT', '3306'),
     }
 }
 
@@ -112,58 +126,42 @@ AUTH_PASSWORD_VALIDATORS = [
 # settings.py
 
 AUTHENTICATION_BACKENDS = [
-    'gestionhopital.authentication_backends.EmailOrUsernameBackend',  # Ajoutez votre backend ici
-    'django.contrib.auth.backends.ModelBackend',  # Ce backend reste pour garantir la compatibilité avec les autres méthodes d'authentification
+    'django.contrib.auth.backends.ModelBackend',  # Seul backend utilisé
 ]
 
 
-
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.example.com'  # Remplacez par votre hôte SMTP
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'elconquistadorbaoulyn@gmail.com'  # Remplacez par votre email
-EMAIL_HOST_PASSWORD = ''  # Remplacez par votre mot de passe
-
-
+# Configuration des messages Django
+MESSAGE_TAGS = {
+    messages.DEBUG: "debug",
+    messages.INFO: "info",
+    messages.SUCCESS: "success",
+    messages.WARNING: "warning",
+    messages.ERROR: "danger",
+}
 
 # Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
-LANGUAGE_CODE = 'fr-fr'
-
-TIME_ZONE = 'America/Port-au-Prince'
-
-
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
 USE_I18N = True
-
 USE_TZ = True
 
+# Configuration email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = get_env_variable('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = get_env_variable('EMAIL_PORT', '587')
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = get_env_variable('EMAIL_HOST_USER', required=True)
+EMAIL_HOST_PASSWORD = get_env_variable('EMAIL_HOST_PASSWORD', required=True)
+DEFAULT_FROM_EMAIL = get_env_variable('DEFAULT_FROM_EMAIL', 'elconquistadorbaoulyn@gmail.com')
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
-# Chemin de base du projet
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# URL pour accéder aux fichiers statiques
+# Static & Media files
 STATIC_URL = '/static/'
-
-# Chemin où Django recherche les fichiers statiques
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),  # si vos fichiers statiques sont dans un dossier "static"
-]
-
-# Ce répertoire est utilisé pour collecter tous les fichiers statiques lors de la mise en production
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # utile lorsque vous utilisez 'collectstatic'
-
-# URL où les fichiers médias seront accessibles
+STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
-# Chemin où les fichiers médias sont sauvegardés
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+# URLs de redirection
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/login/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

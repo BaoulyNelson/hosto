@@ -2,9 +2,13 @@
 
 {% block title %}Modifier {{ type_entite }}{% endblock %}
 
-{% block content %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/formulaire.css' %}">
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/formulaire.css' %}">
+{% endblock %}
+
+{% block content %}
 
 <div class="container">
     <h1>Modifier {{ type_entite }}</h1>

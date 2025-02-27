@@ -4,7 +4,8 @@ from datetime import date
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
 from django.contrib.auth.models import User
-
+from django_countries.fields import CountryField
+from django_countries.widgets import CountrySelectWidget
 
 
 class PatientForm(forms.ModelForm):
@@ -159,3 +160,17 @@ class CommentaireForm(forms.ModelForm):
     class Meta:
         model = Commentaire
         fields = ['texte']
+        
+# Formulaire pour mettre à jour le profil de l'utilisateur
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+        from django import forms        
+
+
+class DonForm(forms.Form):
+    nom = forms.CharField(max_length=100)
+    email = forms.EmailField()
+    montant = forms.DecimalField(min_value=1, decimal_places=2)
+    pays = CountryField().formfield(widget=CountrySelectWidget())

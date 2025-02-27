@@ -1,0 +1,19 @@
+<h2 style="text-align: center; font-family: Arial, sans-serif; color: #333; padding-bottom: 10px; border-bottom: 2px solid #007bff; display: inline-block; width: 100%;">Commentaires</h2>
+<div id="commentaires" class="commentaires-container">
+    {% for commentaire in commentaires %}
+        <div class="commentaire">
+            <p>
+                <strong>{{ commentaire.utilisateur.username }} a dit</strong>:
+                <span>{{ commentaire.texte }}</span>
+                <span class="commentaire-date">
+                    <small>Posté le {{ commentaire.date_postee|date:"D, d M Y H:i" }}</small>
+                </span>
+            </p>
+            {% if request.user.is_superuser %}
+                <a href="{% url 'supprimer_commentaire' commentaire.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>Aucun commentaire disponible.</p>
+    {% endfor %}
+</div>

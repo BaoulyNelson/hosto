@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Faire un don{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/don.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="don-container">
+        <h1>Faire un Don</h1>
+        <p>Votre soutien nous aide à accomplir notre mission. Merci de votre générosité !</p>
+        
+        <form action="{% url 'process_don' %}" method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            
+            <div class="form-group">
+                {{ form.nom.label }} {{ form.nom }}
+                {{ form.nom.errors }}
+            </div>
+            
+            <div class="form-group">
+                {{ form.email.label }} {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+            
+            <div class="form-group">
+                {{ form.montant.label }} {{ form.montant }}
+                {{ form.montant.errors }}
+            </div>
+            
+            <div class="form-group">
+                {{ form.pays.label }} {{ form.pays }}
+                {{ form.pays.errors }}
+            </div>
+            
+            <button type="submit" class="btn-donate">Faire un Don</button>
+        </form>
+        
+    </div>
+    {% endblock %}

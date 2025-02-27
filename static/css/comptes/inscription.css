@@ -1,13 +1,6 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f4f8;
-    display: flex;
     justify-content: center;
     align-items: center;
 }
@@ -19,6 +12,7 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     width: 400px;
     text-align: center;
+    margin: 0 auto; /* Centre horizontalement le conteneur */
 }
 
 .logo-container {
@@ -42,8 +36,10 @@ body {
 .form-group {
     margin-bottom: 15px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Centre les éléments horizontalement */
+    align-items: center; /* Centre les éléments verticalement */
 }
+
 
 .form-group input[type="text"], 
 .form-group input[type="email"], 

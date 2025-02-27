@@ -2,10 +2,13 @@
 
 {% block title %}Remerciement{% endblock %}
   
-    {% block content %}
 
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/merci.css' %}">
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/merci.css' %}">
+{% endblock %}
+{% block content %}
 
 <div class="container">
     <img src="{% static 'images/success-icon.jpg' %}" alt="Succès">

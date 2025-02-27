@@ -1,7 +1,12 @@
-{% extends "base.html" %} {% block title %}Recherche {% endblock %} {% block content %} 
+{% extends "base.html" %} {% block title %}Recherche {% endblock %} 
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/recherche.css' %}" />
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/recherche.css' %}">
+{% endblock %}
+
+{% block content %}
 
 <div class="container mt-5">
   <h1 class="text-center text-primary mb-4">Résultats de Recherche</h1>

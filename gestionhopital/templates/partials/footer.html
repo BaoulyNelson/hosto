@@ -1,38 +1,67 @@
 {% load static %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/footer.css' %}">
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
 {% endblock %}
+<footer class="bg-dark text-light pt-4 pb-2">
+    <div class="container">
+        <div class="row">
+            <!-- Section Infos Hôpital -->
+            <div class="col-md-4">
+                <h5 class="fw-bold">À propos de nous</h5>
+                <p>Baouly'S Hosto s'engage à fournir des soins de santé de qualité aux patients avec compassion et expertise.</p>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Rue de l'Hôpital, Port-au-Prince, Haïti</p>
+                <p><i class="fas fa-phone"></i> +509 44521822</p>
+                <p><i class="fas fa-envelope"></i> contact@baoulys-hosto.ht</p>
+            </div>
 
-<footer>
-    <p>&copy; <span id="currentYear"></span> Baouly'S Hopital</p>
+           <!-- Section Services & Assistance -->
+<div class="col-md-4">
+    <h5 class="fw-bold">Services & Assistance</h5>
+    <ul class="list-unstyled">
+        <li><i class="fas fa-user-md"></i> <a href="{% url 'liste_entites' 'medecin' %}" class="text-light">Nos Médecins</a></li>
+        
+        <li><i class="fas fa-hospital"></i> <a href="{% url 'departements' %}" class="text-light">Départements Médicaux</a></li>
+        <li><i class="fas fa-calendar-check"></i> <a href="{% url 'soumettre_demande' %}" class="text-light">Prendre Rendez-vous</a></li>
+        <li><i class="fas fa-hand-holding-heart"></i> <a href="{% url 'faire_don' %}" class="text-light">Faire un Don</a></li>
+        <li><i class="fas fa-question-circle"></i> <a href="{% url 'recherche' %}" class="text-light">FAQ & Aide</a></li>
+    </ul>
+</div>
 
-    <!-- Liens des réseaux sociaux -->
-    <div class="social-icons">
-        <a href="https://web.facebook.com/" target="_blank">
-            <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://twitter.com" target="_blank">
-            <i class="fab fa-twitter"></i>
-        </a>
-        <a href="https://web.telegram.org/a/" target="_blank">
-            <i class="fab fa-instagram"></i>
-        </a>
-        <a href="https://linkedin.com" target="_blank">
-            <i class="fab fa-linkedin-in"></i>
-        </a>
-        <a href="https://whatsapp.com" target="_blank">
-            <i class="fab fa-whatsapp"></i>
-        </a>
-        <a href="https://telegramm.com" target="_blank">
-            <i class="fab fa-telegram"></i>
-        </a>
-        <a href="https://tiktok.com" target="_blank">
-            <i class="fab fa-tiktok"></i>
-        </a>
+
+            <!-- Section Horaires et Réseaux sociaux -->
+            <div class="col-md-4">
+                <h5 class="fw-bold">Horaires d'ouverture</h5>
+                <p><i class="fas fa-clock"></i> Lundi - Vendredi : 08h00 - 18h00</p>
+                <p><i class="fas fa-clock"></i> Samedi : 09h00 - 14h00</p>
+                <p><i class="fas fa-times-circle"></i> Dimanche : Fermé</p>
+
+                <!-- Liens des réseaux sociaux -->
+                <div class="social-icons mt-3">
+                    <a href="https://web.facebook.com/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://web.telegram.org/a/" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://whatsapp.com" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://telegramm.com" target="_blank"><i class="fab fa-telegram"></i></a>
+                    <a href="https://tiktok.com" target="_blank"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="text-center mt-4">
+            <p class="m-0">&copy; <span id="year"></span> Baouly'S Hosto. Tous droits réservés.</p>
+        </div>
     </div>
-
-    {% load static %}
-    <!-- Chargement des fichiers JavaScript -->
-    <script src="{% static 'js/footer.js' %}"></script>
 </footer>
+
+<!-- CSS personnalisé -->
+<style>
+
+</style>
+
+<!-- Script pour l'année dynamique -->
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+

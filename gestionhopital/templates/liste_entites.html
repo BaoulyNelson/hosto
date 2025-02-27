@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Liste des entités{% endblock %}
-{% block content %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/table.css' %}" />
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+{% block content %}
 
 {% if patients %}
 <h2>Liste des Patients</h2>

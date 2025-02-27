@@ -39,6 +39,7 @@ form {
     background-color: #fff;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    margin: 0 auto; /* Centre horizontalement le conteneur */
 }
 
 /* Style des champs du formulaire */

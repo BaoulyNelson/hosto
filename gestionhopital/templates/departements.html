@@ -1,8 +1,12 @@
 {% extends "base.html" %} {% block title %}Départements
-{% endblock %} {% block content %}
+{% endblock %} 
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/departement.css' %}" />
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/departement.css' %}">
+{% endblock %}
 
+
+{% block content %}
 <div class="departement-container">
   <h1>Départements de l'Hôpital</h1>
   <ul class="departement-list">

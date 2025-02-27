@@ -1,0 +1,18 @@
+.social-icons a {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 50%;
+    background: #555;
+    color: white;
+    font-size: 18px;
+    transition: all 0.3s ease-in-out;
+}
+.social-icons a:hover {
+    background: #007bff;
+    color: white;
+    transform: scale(1.1);
+}

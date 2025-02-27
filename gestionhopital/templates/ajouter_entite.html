@@ -2,10 +2,14 @@
 
 {% block title %}Ajouter entite{% endblock %}
   
-    {% block content %}
 
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/formulaire.css' %}">
+   
+    {% block styles %}
+    <link rel="stylesheet" href="{% static 'css/demande.css' %}">
+{% endblock %}
+
+{% block content %}
 
     <h1>Ajouter {{ type_entite|capfirst }}</h1>
     <form method="post">
@@ -13,7 +17,7 @@
         {{ form.as_p }}
         <button type="submit">Ajouter</button>
          <!-- Correction : on passe 'type_entite' à l'URL -->
-    <a href="{% url 'liste_entites' type_entite %}"class="btn btn-warning">annuler </a>
+    <a href="{% url 'index' %}"class="btn btn-warning">annuler </a>
     </form>
    
     {% endblock %}

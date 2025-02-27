@@ -1,8 +1,11 @@
-{% extends "base.html" %} {% block title %}Recherche{% endblock %} {% block
-content %} {% load static %}
+{% extends "base.html" %} {% block title %}Recherche{% endblock %}  {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/recherche.css' %}" />
 
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/recherche.css' %}">
+{% endblock %}
+
+{% block content %}
 <form
   method="GET"
   action="{% url 'recherche' %}"

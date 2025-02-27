@@ -1,27 +1,21 @@
 
 # Create your views here.
-from django.shortcuts import render, redirect
 from .models import Patient,Medecin,Consultation,Prescription,Dossier,Departement,Commentaire
-from .forms import PatientForm,MedecinForm,ConsultationForm,PrescriptionForm,DossierForm,CommentaireForm
+from .forms import PatientForm,MedecinForm,ConsultationForm,PrescriptionForm,DossierForm,CommentaireForm,DonForm
 from django.contrib.auth.decorators import login_required
-from .forms import DemandeConsultationForm,FormulaireCreationUtilisateur, FormulaireAuthentificationPersonnalise, FormulaireReinitialisationMotDePasse
-from django.contrib.auth import login, authenticate,logout
-from django.contrib.auth import views as auth_views
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.template.loader import render_to_string
-from django.core.mail import send_mail
+from .forms import DemandeConsultationForm,ProfileForm
+from django.contrib.auth import login, authenticate
 from django.contrib import messages
-from .forms import FormulaireReinitialisationMotDePasse  # Assurez-vous que le formulaire est correctement importé
 from django.contrib.auth.models import User
-from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.forms import SetPasswordForm
-from django.utils.http import urlsafe_base64_decode
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseBadRequest
+from django.http import HttpResponse
+from django.contrib import messages
+from django.contrib.messages import get_messages
+from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
+
 def index(request):
     commentaires = Commentaire.objects.all()
 
@@ -43,106 +37,73 @@ def index(request):
         return render(request, 'accueil_visiteur.html', {'commentaires': commentaires})
 
     
-def inscription(request):
-    if request.method == 'POST':
-        form = FormulaireCreationUtilisateur(request.POST)
+@login_required
+def profile(request):
+    return render(request, 'comptes/profile.html', {'user': request.user})
+
+
+
+def login_view(request):
+    # Supprime les anciens messages avant d'afficher un nouveau
+    storage = get_messages(request)
+    for _ in storage:
+        pass  # Cette boucle vide supprime tous les anciens messages
+
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-            form.save()  # Enregistre le nouvel utilisateur
-            return redirect('index')  # Redirige vers la page de connexion
-    else:
-        form = FormulaireCreationUtilisateur()
-    
-    return render(request, 'comptes/inscription.html', {'form': form})
-
-
-def connexion(request):
-    if request.method == 'POST':
-        form = FormulaireAuthentificationPersonnalise(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-
-            # Authentifier l'utilisateur avec le backend personnalisé
+            username = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password")
             user = authenticate(request, username=username, password=password)
+
             if user is not None:
                 login(request, user)
-                return redirect(request.GET.get('next', 'index'))  # 'index' peut être votre page d'accueil
+                messages.success(request, f"Bienvenue {username} ! 😊 Vous êtes connecté.")
+
+                if request.POST.get("remember_me"):
+                    request.session.set_expiry(1209600)  # 2 semaines
+
+                return redirect("user_profile")
             else:
-                form.add_error(None, 'Identifiants invalides.')
-    else:
-        form = FormulaireAuthentificationPersonnalise()
-    
-    return render(request, 'comptes/connexion.html', {'form': form})
-
-
-
-def deconnexion(request):
-    if request.method == 'POST':
-        # Si l'utilisateur confirme la déconnexion
-        logout(request)
-        return redirect('index')  # Rediriger vers la page d'accueil après la déconnexion
-    return render(request, 'comptes/deconnexion.html')
-
-
-def reinitialisation_mot_de_passe(request):
-    if request.method == 'POST':
-        form = FormulaireReinitialisationMotDePasse(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            try:
-                user = User.objects.get(email=email)
-            except User.DoesNotExist:
-                messages.error(request, "Cet email n'est pas associé à un compte.")
-                return render(request, 'comptes/reinitialisation_mot_de_passe.html', {'form': form})
-
-            # Générez le token et l'UID
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            token = default_token_generator.make_token(user)
-
-            # Créez le lien de réinitialisation
-            reset_link = request.build_absolute_uri(
-                f'/reinitialisation_mot_de_passe_confirm/{uid}/{token}/'
-            )
-
-            # Envoyez un email à l'utilisateur avec le lien
-            subject = "Réinitialisation de votre mot de passe"
-            message = render_to_string('comptes/email_reinitialisation.html', {
-                'user': user,
-                'reset_link': reset_link,
-            })
-            send_mail(subject, message, 'no-reply@votresite.com', [email])
-
-            messages.success(request, "Un email de réinitialisation a été envoyé à votre adresse.")
-            return redirect('reinitialisation_mot_de_passe_effectuee')  # Redirigez vers une page de confirmation
-    else:
-        form = FormulaireReinitialisationMotDePasse()
-
-    return render(request, 'comptes/reinitialisation_mot_de_passe.html', {'form': form})
-
-
-
-def reinitialisation_mot_de_passe_confirm(request, uidb64, token):
-    try:
-        uid = urlsafe_base64_decode(uidb64).decode()
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-
-    if user is not None and default_token_generator.check_token(user, token):
-        if request.method == 'POST':
-            form = SetPasswordForm(user, request.POST)
-            if form.is_valid():
-                user = form.save()
-                update_session_auth_hash(request, user)  # Garder l'utilisateur connecté
-                messages.success(request, "Votre mot de passe a été réinitialisé avec succès.")
-                return redirect('connexion')
+                messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
         else:
-            form = SetPasswordForm(user)
-        
-        return render(request, 'comptes/reinitialisation_mot_de_passe_confirm.html', {'form': form})
+            messages.error(request, "Veuillez vérifier vos informations.")
     else:
-        messages.error(request, "Le lien de réinitialisation est invalide.")
-        return redirect('connexion')
+        form = AuthenticationForm()
+
+    return render(request, "comptes/login.html", {"form": form})
+
+
+def signup_view(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Inscription réussie ! 🎉 Bienvenue sur notre plateforme.")
+            return redirect("index")  # Redirection après succès
+        else:
+            messages.error(request, "Une erreur est survenue lors de l'inscription. Vérifiez les informations.")
+    else:
+        form = UserCreationForm()
+
+    return render(request, "comptes/signup.html", {"form": form})
+
+
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('index')  # Redirige vers la page d'accueil ou une autre page après la mise à jour
+    else:
+        form = ProfileForm(instance=request.user)
+    
+    return render(request, 'comptes/edit_profile.html', {'form': form})
+
 
 
 
@@ -305,6 +266,7 @@ def departements(request):
     departements_list = Departement.objects.all()
     return render(request, 'departements.html', {'departements': departements_list})
 
+
 @login_required  # S'assurer que l'utilisateur est connecté
 def ajouter_commentaire(request, content_type_id, object_id):
     content_type = get_object_or_404(ContentType, id=content_type_id)
@@ -350,7 +312,23 @@ def supprimer_commentaire(request, commentaire_id):
         'commentaire': commentaire
     })
     
-    
+def faire_don(request):
+    form = DonForm()
+    return render(request, 'don.html', {'form': form})
+
+def process_don(request):
+    if request.method == 'POST':
+        form = DonForm(request.POST)
+        if form.is_valid():
+            # Traitez les données du formulaire ici
+            nom = form.cleaned_data['nom']
+            email = form.cleaned_data['email']
+            montant = form.cleaned_data['montant']
+            pays = form.cleaned_data['pays']
+
+            return HttpResponse(f"Merci {nom} pour votre don de {montant} € depuis {pays}!")
+
+    return redirect('faire_don')
 
 @login_required
 def admin_dashboard(request):
