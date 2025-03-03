@@ -1,19 +1,16 @@
 {% extends "base.html" %}
 
 {% block title %}Remerciement{% endblock %}
-  
 
 {% load static %}
 
-{% block styles %}
-    <link rel="stylesheet" href="{% static 'css/merci.css' %}">
-{% endblock %}
 {% block content %}
-
-<div class="container">
-    <img src="{% static 'images/success-icon.jpg' %}" alt="Succès">
-    <h2>Merci pour votre demande</h2>
-    <p>Nous avons bien reçu votre demande de consultation et nous vous contacterons sous peu.</p>
+<div class="d-flex flex-column align-items-center justify-content-center vh-100 text-center">
+    <div class="card shadow-lg p-4 border-0" style="max-width: 400px; border-radius: 12px;">
+        <img src="{% static 'images/success-icon.jpg' %}" alt="Succès" class="img-fluid mb-3" style="max-width: 80px;">
+        <h2 class="text-success">Merci !</h2>
+        <p class="text-muted">Votre demande de consultation a été reçue. Nous vous contacterons sous peu.</p>
+        <a href="{% url 'index' %}" class="btn btn-outline-success mt-3">Retour à l'Accueil</a>
+    </div>
 </div>
-<a href="{% url 'index' %}" class="btn btn-secondary">Retour à l'Accueil</a>
 {% endblock %}

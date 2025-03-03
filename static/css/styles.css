@@ -16,39 +16,9 @@ body {
     margin-bottom: 30px;
 }
 
-/* Navigation */
-.navbar {
-    background-color: #4CAF50; /* Couleur de la barre de navigation */
-    padding: 10px;
-}
 
-.navbar-brand, .navbar-nav .nav-link {
-    color: white !important; /* Texte de la navigation en blanc */
-    font-weight: bold;
-}
 
-.navbar-nav .nav-link:hover {
-    color: #e8f5e9 !important; /* Couleur au survol */
-}
 
-.navbar-toggler {
-    border-color: white;
-}
-
-.navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' fill='white'%3E%3Cpath stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-}
-
-.navbar-toggler:hover {
-    background-color: rgba(255, 255, 255, 0.2); /* Fond clair au survol */
-}
-
-/* Conteneur principal */
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
 .list-group-item {
     text-align: center;
 }
@@ -142,23 +112,7 @@ body {
     font-size: 1em;
 }
 
-/* Pied de page */
-footer {
-    background-color: #2e7d32; /* Vert foncé, couleur apaisante et professionnelle */
-    color: white;
-    padding: 20px;
-    text-align: center;
-    margin-top: 40px;
-}
 
-footer a {
-    color: #ffffff;
-    text-decoration: underline;
-}
-
-footer a:hover {
-    color: #e8f5e9;
-}
 
 /* Responsiveness */
 @media (max-width: 768px) {
@@ -171,3 +125,7 @@ footer a:hover {
         padding: 20px 10px;
     }
 }
+.navbar-dark .navbar-nav .nav-link {
+    color: white !important;
+  }
+  

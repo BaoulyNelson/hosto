@@ -1,41 +1,36 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Baouly'S Hosto
-{% endblock %}
-
-
+{% block title %}Baouly'S Hosto{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <div class="hero">
-        <h1>Bienvenue a l'Hôpital</h1>
-        <p>Utilisez le menu pour accéder aux différentes sections.</p>
+    <div class="hero text-center py-4">
+        <h1 class="display-4">Bienvenue à l'Hôpital</h1>
+        <p class="lead">Utilisez le menu pour accéder aux différentes sections.</p>
     </div>
 
     <ul class="list-group">
+        
         <li class="list-group-item">
-            <a href="{% url 'liste_entites' 'patient' %}">Voir la liste des patients</a>
-        </li>
-        <li class="list-group-item">
-            <a href="{% url 'liste_entites' 'medecin' %}">Voir la liste des médecins</a>
-        </li>
-        <li class="list-group-item">
-            <a href="{% url 'liste_entites' 'consultation' %}">Voir la liste des consultations</a>
-        </li>
-        <li class="list-group-item">
-            <a href="{% url 'liste_entites' 'prescription' %}">Voir la liste des prescriptions</a>
-        </li>
-        <li class="list-group-item">
-            <a href="{% url 'liste_entites' 'dossier' %}">Voir la liste des dossiers</a>
-        </li>
-       
-    </ul>
-</div>
+          <a href="{% url 'patients_list' %}">Voir la liste des patients</a>
+      </li>
+      <li class="list-group-item">
+          <a href="{% url 'medecins_list' %}">Voir la liste des médecins</a>
+      </li>
+      <li class="list-group-item">
+          <a href="{% url 'consultations_list' %}">Voir la liste des consultations</a>
+      </li>
+      <li class="list-group-item">
+          <a href="{% url 'prescriptions_list' %}">Voir la liste des prescriptions</a>
+      </li>
+      <li class="list-group-item">
+          <a href="{% url 'dossiers_list' %}">Voir la liste des dossiers</a>
+      </li>
+      </ul>
+    
 
 {% include "partials/commentaires.html" %}
 
-
 <script src="{% static 'js/recherche.js' %}"></script>
-
 {% endblock %}

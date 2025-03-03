@@ -15,6 +15,8 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.messages import get_messages
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
+from django.http import Http404
+
 
 def index(request):
     commentaires = Commentaire.objects.all()
@@ -106,145 +108,112 @@ def edit_profile(request):
 
 
 
-
-
-
 @login_required
 def ajouter_entite(request, type_entite):
+    form_mapping = {
+        'patient': PatientForm,
+        'medecin': MedecinForm,
+        'consultation': ConsultationForm,
+        'prescription': PrescriptionForm,
+        'dossier': DossierForm,
+    }
+
+    if type_entite not in form_mapping:
+        raise Http404("Type d'entité non trouvé")
+
+    FormClass = form_mapping[type_entite]
+
     if request.method == "POST":
-        if type_entite == 'patient':
-            form = PatientForm(request.POST)
-        elif type_entite == 'medecin':
-            form = MedecinForm(request.POST)
-        elif type_entite == 'consultation':
-            form = ConsultationForm(request.POST)
-        elif type_entite == 'prescription':
-            form = PrescriptionForm(request.POST)
-        elif type_entite == 'dossier':
-            form = DossierForm(request.POST)
-        else:
-            form = None
-
-        if form and form.is_valid():
+        form = FormClass(request.POST)
+        if form.is_valid():
             form.save()
-            return redirect(reverse('liste_entites', args=[type_entite]))  # Dynamic redirection
-
+            return redirect(reverse(f"{type_entite}s_list"))  # Redirection dynamique
     else:
-        if type_entite == 'patient':
-            form = PatientForm()
-        elif type_entite == 'medecin':
-            form = MedecinForm()
-        elif type_entite == 'consultation':
-            form = ConsultationForm()
-        elif type_entite == 'prescription':
-            form = PrescriptionForm()
-        elif type_entite == 'dossier':
-            form = DossierForm()
-        else:
-            form = None
+        form = FormClass()
 
     return render(request, 'ajouter_entite.html', {'form': form, 'type_entite': type_entite})
 
 
 
-
 @login_required
 def modifier_entite(request, type_entite, entite_id):
-    # Récupérer l'entité correspondante à modifier en fonction du type
-    if type_entite == 'patient':
-        entite = get_object_or_404(Patient, id=entite_id)
-        form = PatientForm(instance=entite)
-    elif type_entite == 'medecin':
-        entite = get_object_or_404(Medecin, id=entite_id)
-        form = MedecinForm(instance=entite)
-    elif type_entite == 'consultation':
-        entite = get_object_or_404(Consultation, id=entite_id)
-        form = ConsultationForm(instance=entite)
-    elif type_entite == 'prescription':
-        entite = get_object_or_404(Prescription, id=entite_id)
-        form = PrescriptionForm(instance=entite)
-    elif type_entite == 'dossier':
-        entite = get_object_or_404(Dossier, id=entite_id)
-        form = DossierForm(instance=entite)
-    else:
+    # Mapping des modèles et formulaires
+    entite_mapping = {
+        'patient': (Patient, PatientForm),
+        'medecin': (Medecin, MedecinForm),
+        'consultation': (Consultation, ConsultationForm),
+        'prescription': (Prescription, PrescriptionForm),
+        'dossier': (Dossier, DossierForm),
+    }
+
+    if type_entite not in entite_mapping:
         return HttpResponseBadRequest("Type d'entité inconnu")
 
+    ModelClass, FormClass = entite_mapping[type_entite]
+
+    # Récupération de l'entité
+    entite = get_object_or_404(ModelClass, id=entite_id)
+
     if request.method == "POST":
-        if type_entite == 'patient':
-            form = PatientForm(request.POST, instance=entite)
-        elif type_entite == 'medecin':
-            form = MedecinForm(request.POST, instance=entite)
-        elif type_entite == 'consultation':
-            form = ConsultationForm(request.POST, instance=entite)
-        elif type_entite == 'prescription':
-            form = PrescriptionForm(request.POST, instance=entite)
-        elif type_entite == 'dossier':
-            form = DossierForm(request.POST, instance=entite)
-        
+        form = FormClass(request.POST, instance=entite)
         if form.is_valid():
             form.save()
-            return redirect(reverse('liste_entites', args=[type_entite]))
+            return redirect(reverse(f"{type_entite}s_list"))  # Redirection dynamique
+    else:
+        form = FormClass(instance=entite)
 
     return render(request, 'modifier_entite.html', {'form': form, 'type_entite': type_entite})
 
 
+
 @login_required
 def supprimer_entite(request, type_entite, entite_id):
-    if type_entite == 'patient':
-        entite = get_object_or_404(Patient, id=entite_id)
-    elif type_entite == 'medecin':
-        entite = get_object_or_404(Medecin, id=entite_id)
-    elif type_entite == 'consultation':
-        entite = get_object_or_404(Consultation, id=entite_id)
-    elif type_entite == 'prescription':
-        entite = get_object_or_404(Prescription, id=entite_id)
-    elif type_entite == 'dossier':
-        entite = get_object_or_404(Dossier, id=entite_id)
-    else:
+    entite_mapping = {
+        'patient': ('patients_list', Patient),
+        'medecin': ('medecins_list', Medecin),
+        'consultation': ('consultations_list', Consultation),
+        'prescription': ('prescriptions_list', Prescription),
+        'dossier': ('dossiers_list', Dossier),
+    }
+
+    if type_entite not in entite_mapping:
         return HttpResponseBadRequest("Type d'entité inconnu")
+
+    url_name, ModelClass = entite_mapping[type_entite]
+    entite = get_object_or_404(ModelClass, id=entite_id)
 
     if request.method == "POST":
         entite.delete()
-        return redirect(reverse('liste_entites', args=[type_entite]))
+        return redirect(reverse(url_name))  # Redirection après suppression
 
-    return render(request, 'supprimer_entite.html', {'entite': entite, 'type_entite': type_entite})
-
-
-
-def liste_entites(request, type_entite):
-    context = {}
-    content_type = None  # Initialise content_type à None
-
-    # Récupérer les entités en fonction du type
-    if type_entite == 'patient':
-        context['patients'] = Patient.objects.all()
-        content_type = ContentType.objects.get_for_model(Patient)
-    elif type_entite == 'medecin':
-        context['medecins'] = Medecin.objects.all()
-        content_type = ContentType.objects.get_for_model(Medecin)
-    elif type_entite == 'consultation':
-        context['consultations'] = Consultation.objects.all()
-        content_type = ContentType.objects.get_for_model(Consultation)
-    elif type_entite == 'prescription':
-        context['prescriptions'] = Prescription.objects.all()
-        content_type = ContentType.objects.get_for_model(Prescription)
-    elif type_entite == 'dossier':
-        context['dossiers'] = Dossier.objects.all()
-        content_type = ContentType.objects.get_for_model(Dossier)
-    else:
-        # Si le type d'entité est invalide, vous pouvez renvoyer une 404 ou gérer l'erreur autrement
-        return render(request, '404.html', status=404)
-
-    # Récupérer les commentaires associés à chaque entité si le content_type a été défini
-    if content_type:
-        context['commentaires'] = Commentaire.objects.filter(content_type=content_type).order_by('-date_postee')
+    return render(request, 'supprimer_entite.html', {'entite': entite, 'type_entite': type_entite, 'url_name': url_name})
 
 
 
-    # Passer le content_type au contexte pour l'utiliser dans le template
-    context['content_type'] = content_type
+def liste_entites_generique(request, type_entite, template_name):
+    entites_mapping = {
+        'patient': ('patients', Patient),
+        'medecin': ('medecins', Medecin),
+        'consultation': ('consultations', Consultation),
+        'prescription': ('prescriptions', Prescription),
+        'dossier': ('dossiers', Dossier),
+    }
 
-    return render(request, 'liste_entites.html', context)
+    if type_entite not in entites_mapping:
+        raise Http404("Type d'entité non trouvé")
+
+    key, model = entites_mapping[type_entite]
+    context = {
+        key: model.objects.all(),
+        'content_type': ContentType.objects.get_for_model(model),
+        'commentaires': Commentaire.objects.filter(
+            content_type=ContentType.objects.get_for_model(model)
+        ).order_by('-date_postee'),
+    }
+
+    return render(request, template_name, context)
+
+    
     
 def soumettre_demande(request):
     if request.method == 'POST':
@@ -267,7 +236,7 @@ def departements(request):
     return render(request, 'departements.html', {'departements': departements_list})
 
 
-@login_required  # S'assurer que l'utilisateur est connecté
+@login_required
 def ajouter_commentaire(request, content_type_id, object_id):
     content_type = get_object_or_404(ContentType, id=content_type_id)
     model_class = content_type.model_class()
@@ -279,12 +248,23 @@ def ajouter_commentaire(request, content_type_id, object_id):
             commentaire = form.save(commit=False)
             commentaire.content_type = content_type
             commentaire.object_id = instance.id
-            
-            # Assignation de l'utilisateur actuel
-            commentaire.utilisateur = request.user  
-            
+            commentaire.utilisateur = request.user  # Assignation de l'utilisateur actuel
             commentaire.save()
-            return redirect('liste_entites', type_entite=content_type.model)  # Rediriger après ajout
+
+            # Utiliser un dictionnaire de correspondance pour la redirection
+            url_mapping = {
+                'patient': 'patients_list',
+                'medecin': 'medecins_list',
+                'consultation': 'consultations_list',
+                'prescription': 'prescriptions_list',
+                'dossier': 'dossiers_list',
+            }
+
+            # Récupérer le nom d'URL correspondant au type d'entité
+            url_name = url_mapping.get(content_type.model, 'home')  # 'home' comme fallback si inconnu
+
+            return redirect(url_name)  # Redirection vers l'URL correcte après ajout
+
     else:
         form = CommentaireForm()
 
@@ -305,12 +285,29 @@ def supprimer_commentaire(request, commentaire_id):
 
     # Vérifier si la demande est un POST
     if request.method == 'POST':
+        content_type = commentaire.content_type
+        model_name = content_type.model
+
+        # Dictionnaire de correspondance entre le modèle de contenu et l'URL à utiliser
+        url_mapping = {
+            'patient': 'patients_list',
+            'medecin': 'medecins_list',
+            'consultation': 'consultations_list',
+            'prescription': 'prescriptions_list',
+            'dossier': 'dossiers_list',
+        }
+
+        # Obtenir le nom de l'URL correspondant
+        url_name = url_mapping.get(model_name, 'home')  # 'home' comme fallback si le modèle est inconnu
+
         commentaire.delete()
-        return redirect('liste_entites', type_entite=commentaire.content_type.model)
+
+        return redirect(url_name)  # Rediriger vers l'URL correcte après la suppression
 
     return render(request, 'confirmer_suppression_commentaire.html', {
         'commentaire': commentaire
     })
+
     
 def faire_don(request):
     form = DonForm()
@@ -330,26 +327,7 @@ def process_don(request):
 
     return redirect('faire_don')
 
-@login_required
-def admin_dashboard(request):
-    total_utilisateurs = User.objects.count()
-    total_commentaires = Commentaire.objects.count()
-    total_departements = Departement.objects.count()
-    total_medecins = Medecin.objects.count()
-    total_patients = Patient.objects.count()
-    total_prescriptions = Prescription.objects.count()  # Comptage des prescriptions
-    total_dossiers = Dossier.objects.count()  # Comptage des dossiers
 
-    context = {
-        'total_utilisateurs': total_utilisateurs,
-        'total_commentaires': total_commentaires,
-        'total_departements': total_departements,
-        'total_medecins': total_medecins,
-        'total_patients': total_patients,
-        'total_prescriptions': total_prescriptions,  # Ajout du total des prescriptions
-        'total_dossiers': total_dossiers,  # Ajout du total des dossiers
-    }
-    return render(request, 'admin/admin_dashboard.html', context)
 
 def detail_patient(request, patient_id):
     patient = get_object_or_404(Patient, id=patient_id)

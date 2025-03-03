@@ -16,7 +16,8 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Ajouter Commentaire</button>
-        <a href="{% url 'liste_entites' content_type.model %}" class="btn btn-secondary">Annuler</a>
+        <a href="{% url content_type.model|add:"s_list" %}" class="btn btn-secondary">Annuler</a>
+
     </form>
    
     <br>

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Liste des Médecins{% endblock %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <h2 class="text-center mb-4">Liste des Médecins</h2>
+  {% if user.is_authenticated %}
+  <div class="text-end mb-3">
+    {% if user.is_superuser %}
+    <a href="{% url 'ajouter_entite' 'medecin' %}" class="btn btn-success btn-sm me-2" title="Ajouter un médecin">
+      <i class="fas fa-user-plus"></i> Ajouter un Medecin
+    </a>
+    {% endif %}
+  </div>
+{% endif %}
+
+
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Sexe</th>
+          <th>Téléphone</th>
+          <th>Adresse</th>
+          <th>Email</th>
+          <th>Spécialité</th>
+          {% if user.is_authenticated %}
+            <th>Actions & Commentaires</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for medecin in medecins %}
+        <tr>
+          <td>{{ medecin.nom }}</td>
+          <td>{{ medecin.prenom }}</td>
+          <td>{{ medecin.sexe }}</td>
+          <td>{{ medecin.tel }}</td>
+          <td>{{ medecin.adresse }}</td>
+          <td>{{ medecin.email }}</td>
+          <td>{{ medecin.specialite }}</td>
+
+          {% if user.is_authenticated %}
+          <td>
+            {% if user.is_superuser %}
+
+
+              {# Modifier le médecin #}
+              <a href="{% url 'modifier_entite' 'medecin' medecin.id %}" class="btn btn-warning btn-sm me-2" title="Modifier">
+                <i class="fas fa-edit"></i>
+              </a>
+
+              {# Supprimer le médecin #}
+              <a href="{% url 'supprimer_entite' 'medecin' medecin.id %}" class="btn btn-danger btn-sm me-2" title="Supprimer"
+                 onclick="return confirm('Voulez-vous vraiment supprimer ce médecin ?');">
+                <i class="fas fa-trash-alt"></i>
+              </a>
+            {% endif %}
+
+            {# Ajouter un commentaire pour le médecin #}
+            <a href="{% url 'ajouter_commentaire' content_type.id medecin.id %}" class="btn btn-info btn-sm" title="Ajouter un commentaire">
+              <i class="fas fa-comment"></i>
+            </a>
+          </td>
+          {% endif %}
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8" class="text-center text-muted py-3">Aucun médecin trouvé.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="text-center mt-4">
+    <a href="{% url 'index' %}" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Retour
+    </a>
+  </div>
+</div>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index,recherche,ajouter_entite,modifier_entite,supprimer_entite,liste_entites,departements,ajouter_commentaire,supprimer_commentaire,soumettre_demande,merci,faire_don,process_don
+from .views import index,recherche,ajouter_entite,modifier_entite,supprimer_entite,departements,ajouter_commentaire,supprimer_commentaire,soumettre_demande,merci,faire_don,process_don
 # Importation des vues de Django pour la gestion de l'authentification
 from . import views
 
@@ -37,6 +37,15 @@ urlpatterns = [
         template_name='comptes/password_reset_complete.html'
     ), name='password_reset_complete'),
 
+
+    path('patients/', views.liste_entites_generique, {'type_entite': 'patient', 'template_name': 'liste_patients.html'}, name='patients_list'),
+    path('medecins/', views.liste_entites_generique, {'type_entite': 'medecin', 'template_name': 'liste_medecins.html'}, name='medecins_list'),
+    path('consultations/', views.liste_entites_generique, {'type_entite': 'consultation', 'template_name': 'liste_consultations.html'}, name='consultations_list'),
+    path('prescriptions/', views.liste_entites_generique, {'type_entite': 'prescription', 'template_name': 'liste_prescriptions.html'}, name='prescriptions_list'),
+    path('dossiers/', views.liste_entites_generique, {'type_entite': 'dossier', 'template_name': 'liste_dossiers.html'}, name='dossiers_list'),
+
+
+
      # URL pour éditer le profil utilisateur
     path('edit_profile/', views.edit_profile, name='edit_profile'),  # URL pour modifier le profil
 
@@ -46,10 +55,6 @@ urlpatterns = [
     
     path('supprimer/<str:type_entite>/<int:entite_id>/', supprimer_entite, name='supprimer_entite'),
 
-    path('liste/<str:type_entite>/', liste_entites, name='liste_entites'),
-    
-
- 
     path('soumettre-demande/',soumettre_demande, name='soumettre_demande'),
     path('merci/', merci, name='merci'),
     path('departements/', departements, name='departements'),
