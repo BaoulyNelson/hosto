@@ -1,5 +1,5 @@
 from django import forms
-from .models import Patient,Medecin,Consultation,Prescription,Dossier,DemandeConsultation,Commentaire
+from .models import Patient,Medecin,Consultation,Prescription,Dossier,DemandeConsultation,Commentaire,Departement,Contact
 from datetime import date
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
@@ -96,13 +96,7 @@ class DossierForm(forms.ModelForm):
 
 
 
-class DemandeConsultationForm(forms.ModelForm):
-    class Meta:
-        model = DemandeConsultation
-        fields = ['nom', 'prenom', 'email', 'telephone', 'message']
-        widgets = {
-            'message': forms.Textarea(attrs={'rows': 5}),
-        }
+
         
 class FormulaireCreationUtilisateur(UserCreationForm):
     first_name = forms.CharField(
@@ -174,3 +168,50 @@ class DonForm(forms.Form):
     email = forms.EmailField()
     montant = forms.DecimalField(min_value=1, decimal_places=2)
     pays = CountryField().formfield(widget=CountrySelectWidget())
+
+
+
+
+
+class DepartementForm(forms.ModelForm):
+    class Meta:
+        model = Departement
+        fields = ['nom', 'description']
+
+    # Remplacer le champ nom par un champ select
+    nom = forms.ModelChoiceField(queryset=Departement.objects.all(), empty_label="Sélectionner un département")
+    
+
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = ['type_demande', 'nom', 'prenom', 'email', 'telephone', 'sujet', 'message']
+        widgets = {
+            'type_demande': forms.Select(attrs={'class': 'form-control'}),
+            'nom': forms.TextInput(attrs={
+                'placeholder': 'Nom',
+                'class': 'form-control',
+            }),
+            'prenom': forms.TextInput(attrs={
+                'placeholder': 'Prénom',
+                'class': 'form-control',
+            }),
+            'email': forms.EmailInput(attrs={
+                'placeholder': 'Votre adresse email',
+                'class': 'form-control',
+            }),
+            'telephone': forms.TextInput(attrs={
+                'placeholder': 'Téléphone',
+                'class': 'form-control',
+            }),
+            'sujet': forms.TextInput(attrs={
+                'placeholder': 'Sujet de votre message',
+                'class': 'form-control',
+            }),
+            'message': forms.Textarea(attrs={
+                'placeholder': 'Votre message ici...',
+                'class': 'form-control',
+                'rows': 5,
+            }),
+        }

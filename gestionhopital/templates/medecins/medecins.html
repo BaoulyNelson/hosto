@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}
+Départements
+{% endblock %}
+
+{% block content %}
+<section id="doctors" class="section">
+    <div class="container">
+        <h2 class="section-title">Nos Médecins</h2>
+        <p class="section-subtitle">Notre équipe de médecins hautement qualifiés est dévouée à fournir les meilleurs soins possibles à nos patients.</p>
+        <div class="doctors-grid">
+            {% for doctor in doctors %}
+                <div class="doctor-card">
+                    <div class="doctor-img">
+                        <img src="{{ doctor.image_url }}" alt="{{ doctor.name }}">
+                    </div>
+                    <div class="doctor-info">
+                        <h3 class="doctor-name">{{ doctor.name }}</h3>
+                        <p class="doctor-speciality">{{ doctor.speciality }}</p>
+                        <p>{{ doctor.description }}</p>
+                        <div class="doctor-social">
+                            {% if doctor.facebook_link %}
+                                <a href="{{ doctor.facebook_link }}"><i class="fab fa-facebook-f"></i></a>
+                            {% endif %}
+                            {% if doctor.twitter_link %}
+                                <a href="{{ doctor.twitter_link }}"><i class="fab fa-twitter"></i></a>
+                            {% endif %}
+                            {% if doctor.linkedin_link %}
+                                <a href="{{ doctor.linkedin_link }}"><i class="fab fa-linkedin-in"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

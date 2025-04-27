@@ -1,0 +1,42 @@
+{% extends "base.html" %} {% block title %}Baouly'S Hosto
+{%endblock %}  
+{% load static %}
+{% block content %}
+
+<!-- About Section -->
+<section id="about" class="section about ">
+    <div class="container">
+        <h2 class="section-title pt-5">À propos de nous</h2>
+        <div class="about-content">
+            <div class="about-img">
+                <img src="{% static 'images/hopital.jpeg' %}" alt="Hôpital de l'Université d'État d'Haïti">
+
+            </div>
+            <div class="about-text">
+                <h3>Excellence médicale depuis plus de 50 ans</h3>
+                <p>L'Hôpital de l'Université d'État d'Haïti (HUEH) est le plus grand établissement hospitalier universitaire d'Haïti. Fondé pour servir la population haïtienne, notre hôpital s'engage à fournir des soins de santé de qualité supérieure à tous les patients, indépendamment de leur statut socio-économique.</p>
+                <p>Nous sommes fiers de notre équipe de médecins, infirmières et personnel de soutien hautement qualifiés qui travaillent sans relâche pour améliorer la santé et le bien-être de nos patients. Notre mission est d'offrir des soins médicaux exceptionnels, de former la prochaine génération de professionnels de la santé et de mener des recherches innovantes.</p>
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-text">Lits</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">200+</div>
+                        <div class="stat-text">Médecins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-text">Spécialités</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-text">Service</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

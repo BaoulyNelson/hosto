@@ -22,22 +22,7 @@ p {
     text-align: center;
 }
 
-/* Style des boutons */
-.btn {
-    background-color: #007bff; /* Couleur primaire */
-    color: white; /* Texte blanc */
-    border: none;
-    padding: 10px 15px; /* Espacement intérieur */
-    border-radius: 5px; /* Coins arrondis */
-    cursor: pointer; /* Changement du curseur au survol */
-    transition: background-color 0.3s; /* Transition de couleur */
-    width: 100%; /* Prend toute la largeur */
-}
 
-/* Effet de survol du bouton */
-.btn:hover {
-    background-color: #0056b3; /* Couleur plus foncée au survol */
-}
 
 /* Style des champs de saisie */
 input[type="text"],

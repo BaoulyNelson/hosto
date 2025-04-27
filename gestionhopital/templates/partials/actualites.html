@@ -1,0 +1,53 @@
+<!-- Section Actualités -->
+<section class="featured-news py-5">
+    <div class="container">
+        <div class="featured-news-container">
+            
+            <!-- Articles principaux -->
+            <div class="main-articles">
+                {% for article in articles_principaux %}
+                <div class="main-article fade-in">
+                    <div class="main-article-img">
+                        {% if article.image %}
+                        <img src="{{ article.image.url }}" alt="{{ article.titre }}">
+                        {% else %}
+                        <img src="images/logo.jpg" alt="{{ article.titre }}">
+                        {% endif %}
+                    </div>
+                    <div class="main-article-content">
+                        <span class="main-article-category">{{ article.get_type_display }}</span>
+                        <h3 class="main-article-title">{{ article.titre }}</h3>
+                        <p class="main-article-excerpt">{{ article.contenu|truncatewords:30 }}</p>
+                        <div class="main-article-meta">
+                            <div class="main-article-date">{{ article.date_publication|date:"d M Y" }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Articles secondaires (événements et annonces) -->
+            <div class="secondary-articles">
+                {% for actualite in evenements_et_annonces %}
+                <div class="secondary-article fade-in">
+                    <div class="secondary-article-img">
+                        {% if actualite.image %}
+                        <img src="{{ actualite.image.url }}" alt="{{ actualite.titre }}">
+                        {% else %}
+                        <img src="images/hopital.jpeg" alt="{{ actualite.titre }}">
+                        {% endif %}
+                    </div>
+                    <div class="secondary-article-content">
+                        <span class="secondary-article-category">{{ actualite.get_type_display }}</span>
+                        <h3 class="secondary-article-title">{{ actualite.titre }}</h3>
+                        <div class="secondary-article-meta">
+                            <div>{{ actualite.date_publication|date:"d M Y" }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</section>

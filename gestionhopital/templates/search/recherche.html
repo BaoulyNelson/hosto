@@ -1,0 +1,52 @@
+{% extends "base.html" %} {% block title %}Recherche {% endblock %} 
+{% load static %}
+
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/recherche.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+  <h1 class="text-center text-primary mb-4">Résultats de Recherche</h1>
+
+  <!-- Formulaire de recherche -->
+  <form method="GET" action="{% url 'recherche_globale' %}" class="mb-5">
+    <div class="input-group">
+      <input
+        type="search"
+        class="form-control form-control-lg"
+        name="q"
+        placeholder="Rechercher..."
+        aria-label="Rechercher"
+        value="{{ query }}"
+      />
+      <div class="input-group-append">
+        <button class="btn btn-primary btn-lg" type="submit">Rechercher</button>
+      </div>
+    </div>
+  </form>
+
+  {% if query %}
+      <h1 class="text-3xl font-bold mb-6 text-gray-800">Résultats pour "{{ query }}"</h1>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for objet in resultats %}
+          <div class="card border p-4 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold text-blue-600">{{ objet }}</h2>
+            <p class="text-gray-700 result-item">
+              {{ objet }}
+            </p>
+          </div>
+        {% empty %}
+          <p class="italic text-gray-500">Aucun résultat trouvé.</p>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-gray-500 italic">Tapez un mot-clé dans la barre de recherche pour trouver des contenus.</p>
+    {% endif %}
+ 
+</div>
+
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Liste des Prescriptions{% endblock %}
+
+
+
+{% block content %}
+<div class="container py-4">
+  <h2 class="text-center mb-4">Liste des Prescriptions</h2>
+
+  {% if user.is_authenticated %}
+    {% if user.is_superuser %}
+      <div class="d-flex justify-content-end pt-5">
+        <a href="{% url 'ajouter_entite' 'prescription' %}" class="btn btn-success btn-sm" title="Ajouter une prescription">
+          <i class="fas fa-plus"></i> Ajouter une Prescription
+        </a>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  <div class="table-responsive">
+    <table class="table table-hover table-striped align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>ID Prescription</th>
+          <th>Consultation</th>
+          <th>Prescription</th>
+          {% if user.is_authenticated %}
+            <th>Actions & Commentaires</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for prescription in prescriptions %}
+          <tr>
+            <td>{{ prescription.id }}</td>
+            <td>{{ prescription.idconsultation.id }}</td>
+            <td>{{ prescription.prescription }}</td>
+
+            {% if user.is_authenticated %}
+              <td>
+                <div class="d-flex flex-wrap gap-2">
+                  {% if user.is_superuser %}
+                    <a href="{% url 'modifier_entite' 'prescription' prescription.id %}" class="btn btn-warning btn-sm" title="Modifier">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'supprimer_entite' 'prescription' prescription.id %}" class="btn btn-danger btn-sm" title="Supprimer">
+                      <i class="fas fa-trash-alt"></i>
+                    </a>
+                  {% endif %}
+                  <a href="{% url 'ajouter_commentaire' content_type.id prescription.id %}" class="btn btn-info btn-sm" title="Ajouter un commentaire">
+                    <i class="fas fa-comment"></i>
+                  </a>
+                </div>
+              </td>
+            {% endif %}
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="text-center text-muted py-3">
+              Aucune prescription trouvée.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if prescriptions.has_other_pages %}
+    <nav aria-label="Pagination">
+      <ul class="pagination justify-content-center mt-4">
+        {% if prescriptions.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ prescriptions.previous_page_number }}" aria-label="Précédent">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&laquo;</span>
+          </li>
+        {% endif %}
+
+        {% for num in prescriptions.paginator.page_range %}
+          {% if prescriptions.number == num %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% elif num > prescriptions.number|add:'-3' and num < prescriptions.number|add:'3' %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+          {% endif %}
+        {% endfor %}
+
+        {% if prescriptions.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ prescriptions.next_page_number }}" aria-label="Suivant">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&raquo;</span>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+
+  <div class="text-center mt-4">
+    <a href="{% url 'index' %}" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Retour
+    </a>
+  </div>
+</div>
+{% endblock %}

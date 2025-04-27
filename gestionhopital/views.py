@@ -1,9 +1,9 @@
 
 # Create your views here.
-from .models import Patient,Medecin,Consultation,Prescription,Dossier,Departement,Commentaire
-from .forms import PatientForm,MedecinForm,ConsultationForm,PrescriptionForm,DossierForm,CommentaireForm,DonForm
+from .models import Patient,Medecin,Consultation,Prescription,Dossier,Departement,Commentaire,Doctor,Actualite
+from .forms import PatientForm,MedecinForm,ConsultationForm,PrescriptionForm,DossierForm,CommentaireForm,DonForm,ContactForm,ProfileForm
 from django.contrib.auth.decorators import login_required
-from .forms import DemandeConsultationForm,ProfileForm
+
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -16,27 +16,41 @@ from django.contrib import messages
 from django.contrib.messages import get_messages
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.http import Http404
+from django.db.models import Q
+from .search_config import search_config
+from gestionhopital.utils import ajouter_message
+from django.apps import apps
+from django.contrib.auth import logout
+from django.contrib.contenttypes.models import ContentType
 
+
+
+    
 
 def index(request):
+    # Récupérer tous les commentaires
     commentaires = Commentaire.objects.all()
 
-    # Définir un content_type_id et object_id
+    # Récupérer les articles principaux (type='article')
+    articles_principaux = Actualite.objects.filter(type='article')[:4]  # Par exemple, 2 articles principaux
+
+    # Récupérer les événements et annonces (type='evenement' et 'annonce')
+    evenements_et_annonces = Actualite.objects.filter(type__in=['evenement', 'annonce'])[:6]  # 4 événements/annonces
+
+    # Définir content_type_id et object_id (pour le système de commentaires)
     content_type_id = ContentType.objects.get_for_model(Commentaire).id
     commentaire_exemple = Commentaire.objects.first()
     object_id = commentaire_exemple.id if commentaire_exemple else None
 
-    if request.user.is_authenticated:
-        if request.user.is_superuser:
-            return render(request, 'index.html', {'commentaires': commentaires})
-        else:
-            return render(request, 'accueil_utilisateur.html', {
-                'commentaires': commentaires,
-                'content_type_id': content_type_id,
-                'object_id': object_id
-            })
-    else:
-        return render(request, 'accueil_visiteur.html', {'commentaires': commentaires})
+    # Rendu sur le template index.html avec les données mises à jour
+    return render(request, 'index.html', {
+        'commentaires': commentaires,
+        'articles_principaux': articles_principaux,
+        'evenements_et_annonces': evenements_et_annonces,
+        'content_type_id': content_type_id,
+        'object_id': object_id,
+    })
+
 
     
 @login_required
@@ -44,12 +58,22 @@ def profile(request):
     return render(request, 'comptes/profile.html', {'user': request.user})
 
 
+def confirmer_deconnexion(request):
+    if request.method == 'POST':
+        logout(request)
+        ajouter_message(request, 'success', "Vous avez été déconnecté avec succès.")
+        return redirect('login')  # ou où tu veux après déconnexion
+    return render(request, 'comptes/confirmer_deconnexion.html')
+
 
 def login_view(request):
-    # Supprime les anciens messages avant d'afficher un nouveau
+    if request.user.is_authenticated:
+        ajouter_message(request, 'info', f"Vous êtes déjà connecté, {request.user.username}. 😊")
+        return redirect('profile')
+
     storage = get_messages(request)
     for _ in storage:
-        pass  # Cette boucle vide supprime tous les anciens messages
+        pass
 
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
@@ -60,21 +84,30 @@ def login_view(request):
 
             if user is not None:
                 login(request, user)
-                messages.success(request, f"Bienvenue {username} ! 😊 Vous êtes connecté.")
+                ajouter_message(request, 'success', f"Bienvenue {username} ! 😊 Vous êtes connecté.")
 
                 if request.POST.get("remember_me"):
-                    request.session.set_expiry(1209600)  # 2 semaines
+                    request.session.set_expiry(1209600)
 
-                return redirect("user_profile")
+                next_url = request.GET.get('next') or request.POST.get('next')
+                if next_url:
+                    return redirect(next_url)
+                return redirect('profile')
             else:
-                messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
+                ajouter_message(request, 'error', "Nom d'utilisateur ou mot de passe incorrect.")
         else:
-            messages.error(request, "Veuillez vérifier vos informations.")
+            ajouter_message(request, 'error', "Veuillez vérifier vos informations.")
     else:
         form = AuthenticationForm()
 
     return render(request, "comptes/login.html", {"form": form})
 
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from .utils import ajouter_message
 
 def signup_view(request):
     if request.method == "POST":
@@ -82,14 +115,17 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, "Inscription réussie ! 🎉 Bienvenue sur notre plateforme.")
-            return redirect("index")  # Redirection après succès
+            ajouter_message(request, 'success', "Inscription réussie ! 🎉 Bienvenue sur notre plateforme.")
+            return redirect("profile")  # Redirection après succès
         else:
-            messages.error(request, "Une erreur est survenue lors de l'inscription. Vérifiez les informations.")
+            ajouter_message(request, 'error', "Une erreur est survenue lors de l'inscription. Vérifiez les informations.")
     else:
         form = UserCreationForm()
 
     return render(request, "comptes/signup.html", {"form": form})
+
+
+
 
 
 
@@ -100,11 +136,15 @@ def edit_profile(request):
         form = ProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect('index')  # Redirige vers la page d'accueil ou une autre page après la mise à jour
+            ajouter_message(request, 'success', "Votre profil a été mis à jour avec succès !")
+            return redirect('profile')  # Redirige vers la page du profil après la mise à jour
     else:
         form = ProfileForm(instance=request.user)
     
     return render(request, 'comptes/edit_profile.html', {'form': form})
+
+
+
 
 
 
@@ -126,18 +166,17 @@ def ajouter_entite(request, type_entite):
     if request.method == "POST":
         form = FormClass(request.POST)
         if form.is_valid():
-            form.save()
+            entite = form.save()
+            ajouter_message(request, 'success', f"{type_entite.capitalize()} ajouté avec succès ! ✅")
             return redirect(reverse(f"{type_entite}s_list"))  # Redirection dynamique
     else:
         form = FormClass()
 
-    return render(request, 'ajouter_entite.html', {'form': form, 'type_entite': type_entite})
-
+    return render(request, 'entites/ajouter_entite.html', {'form': form, 'type_entite': type_entite})
 
 
 @login_required
 def modifier_entite(request, type_entite, entite_id):
-    # Mapping des modèles et formulaires
     entite_mapping = {
         'patient': (Patient, PatientForm),
         'medecin': (Medecin, MedecinForm),
@@ -151,18 +190,18 @@ def modifier_entite(request, type_entite, entite_id):
 
     ModelClass, FormClass = entite_mapping[type_entite]
 
-    # Récupération de l'entité
     entite = get_object_or_404(ModelClass, id=entite_id)
 
     if request.method == "POST":
         form = FormClass(request.POST, instance=entite)
         if form.is_valid():
             form.save()
-            return redirect(reverse(f"{type_entite}s_list"))  # Redirection dynamique
+            ajouter_message(request, 'success', f"{type_entite.capitalize()} modifié avec succès ! ✏️✅")
+            return redirect(reverse(f"{type_entite}s_list"))
     else:
         form = FormClass(instance=entite)
 
-    return render(request, 'modifier_entite.html', {'form': form, 'type_entite': type_entite})
+    return render(request, 'entites/modifier_entite.html', {'form': form, 'type_entite': type_entite})
 
 
 
@@ -184,12 +223,18 @@ def supprimer_entite(request, type_entite, entite_id):
 
     if request.method == "POST":
         entite.delete()
+        ajouter_message(request, 'success', f"{type_entite.capitalize()} supprimé avec succès ! ✅")
         return redirect(reverse(url_name))  # Redirection après suppression
 
-    return render(request, 'supprimer_entite.html', {'entite': entite, 'type_entite': type_entite, 'url_name': url_name})
+    return render(request, 'entites/supprimer_entite.html', {
+        'entite': entite, 
+        'type_entite': type_entite,
+        'url_name': url_name
+    })
 
 
 
+@login_required
 def liste_entites_generique(request, type_entite, template_name):
     entites_mapping = {
         'patient': ('patients', Patient),
@@ -214,26 +259,19 @@ def liste_entites_generique(request, type_entite, template_name):
     return render(request, template_name, context)
 
     
-    
-def soumettre_demande(request):
-    if request.method == 'POST':
-        form = DemandeConsultationForm(request.POST)
-        if form.is_valid():
-            form.save()  # Sauvegarder la demande dans la base de données
-            return redirect('merci')  # Rediriger vers une page de remerciement
-    else:
-        form = DemandeConsultationForm()
-    
-    return render(request, 'soumettre_demande.html', {'form': form})
+def doctors_view(request):
+    doctors = Doctor.objects.all()
+    return render(request, 'medecins/medecins.html', {'doctors': doctors})
 
 
 def merci(request):
-    return render(request, 'merci.html')
+    return render(request, 'merci/merci.html')
 
 
 def departements(request):
     departements_list = Departement.objects.all()
-    return render(request, 'departements.html', {'departements': departements_list})
+    return render(request, 'departements/departements.html', {'departements': departements_list})
+
 
 
 @login_required
@@ -248,32 +286,24 @@ def ajouter_commentaire(request, content_type_id, object_id):
             commentaire = form.save(commit=False)
             commentaire.content_type = content_type
             commentaire.object_id = instance.id
-            commentaire.utilisateur = request.user  # Assignation de l'utilisateur actuel
+            commentaire.utilisateur = request.user  # Assigner l'utilisateur actuel
             commentaire.save()
 
-            # Utiliser un dictionnaire de correspondance pour la redirection
-            url_mapping = {
-                'patient': 'patients_list',
-                'medecin': 'medecins_list',
-                'consultation': 'consultations_list',
-                'prescription': 'prescriptions_list',
-                'dossier': 'dossiers_list',
-            }
+            # Ajout d'un message de succès
+            ajouter_message(request, 'success', "Votre commentaire a été ajouté avec succès ! 📝✅")
 
-            # Récupérer le nom d'URL correspondant au type d'entité
-            url_name = url_mapping.get(content_type.model, 'home')  # 'home' comme fallback si inconnu
-
-            return redirect(url_name)  # Redirection vers l'URL correcte après ajout
+            # Rediriger vers la page appropriée après ajout
+            return redirect('index')  # Remplacer par l'URL appropriée après l'ajout
 
     else:
         form = CommentaireForm()
 
-    return render(request, 'ajouter_commentaire.html', {
+    return render(request, 'commentaires/ajouter_commentaire.html', {
         'form': form,
         'instance': instance,
-        'content_type': content_type,  # Ajout du content_type
+        'content_type': content_type,
+        'object_id': object_id,
     })
-
 
 @login_required
 def supprimer_commentaire(request, commentaire_id):
@@ -302,16 +332,21 @@ def supprimer_commentaire(request, commentaire_id):
 
         commentaire.delete()
 
+        # Ajout d'un message de succès après suppression
+        ajouter_message(request, 'success', "Le commentaire a été supprimé avec succès. 🗑️✅")
+
         return redirect(url_name)  # Rediriger vers l'URL correcte après la suppression
 
-    return render(request, 'confirmer_suppression_commentaire.html', {
+    return render(request, 'commentaires/confirmer_suppression_commentaire.html', {
         'commentaire': commentaire
     })
 
-    
+
+
+@login_required
 def faire_don(request):
     form = DonForm()
-    return render(request, 'don.html', {'form': form})
+    return render(request, 'don/don.html', {'form': form})
 
 def process_don(request):
     if request.method == 'POST':
@@ -334,43 +369,59 @@ def detail_patient(request, patient_id):
     commentaires = Commentaire.objects.filter(content_type=ContentType.objects.get_for_model(Patient), object_id=patient.id)
     patient_content_type = ContentType.objects.get_for_model(Patient)
     
-    return render(request, 'detail_patient.html', {
+    return render(request, 'patients/detail_patient.html', {
         'patient': patient,
         'commentaires': commentaires,
         'patient_content_type': patient_content_type
     })
 
 
-def recherche(request):
-    query = request.GET.get('q')
-    patients = []
-    medecins = []
-    consultations = []
-    prescriptions = []
-    dossiers = []
-    
+
+def recherche_globale(request):
+    query = request.GET.get('q', '')
+    resultats = []
+
     if query:
-        # Rechercher des patients par nom ou prénom
-        patients = Patient.objects.filter(nom__icontains=query) | Patient.objects.filter(prenom__icontains=query)
+        for nom_modele, champs in search_config.items():
+            try:
+                # Remplace 'inscriptions' par le nom de ton app
+                modele = apps.get_model('gestionhopital', nom_modele)
+                filtres = Q()
+                for champ in champs:
+                    filtres |= Q(**{f"{champ}__icontains": query})
+                objets = modele.objects.filter(filtres)
 
-        # Rechercher des médecins par nom, prénom ou spécialité
-        medecins = Medecin.objects.filter(nom__icontains=query) | Medecin.objects.filter(prenom__icontains=query) | Medecin.objects.filter(specialite__icontains=query)
+                # Ajouter les objets au résultat global
+                # Utilise extend pour ne pas créer une liste de listes
+                resultats.extend(objets)
+            except Exception as e:
+                # Si un modèle ou un champ est invalide, on l'ignore
+                print(f"Erreur avec {nom_modele}: {e}")
+                continue
 
-        # Rechercher des consultations par diagnostique
-        consultations = Consultation.objects.filter(diagnostique__icontains=query)
-
-        # Rechercher des prescriptions par ID de consultation ou prescription
-        prescriptions = Prescription.objects.filter(idconsultation__id__icontains=query) | Prescription.objects.filter(prescription__icontains=query)
-
-        # Rechercher des dossiers par ID de consultation ou code
-        dossiers = Dossier.objects.filter(idconsultation__id__icontains=query) | Dossier.objects.filter(code__icontains=query)
-
-    context = {
-        'patients': patients,
-        'medecins': medecins,
-        'consultations': consultations,
-        'prescriptions': prescriptions,
-        'dossiers': dossiers,
+    return render(request, 'search/recherche.html', {
         'query': query,
-    }
-    return render(request, 'recherche.html', context)
+        'resultats': resultats
+    })
+
+
+
+
+def contact_view(request):
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()  # <-- ENREGISTRE EN BASE
+            return render(request, "contact/contact_success.html")
+    else:
+        form = ContactForm()
+
+    return render(request, "contact/contact.html", {"form": form})
+
+
+
+def contact_success_view(request):
+    return render(request, "contact/contact_success.html")
+
+def apropos(request):
+    return render(request, 'apropos/apropos.html')

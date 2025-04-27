@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}
+Départements
+{% endblock %}
+
+{% block content %}
+<section class="section">
+<div class="container mt-5">
+
+  <h2 class="section-title">Nos Departements</h2>
+
+  <p class="section-subtitle">
+    Nous offrons une gamme complète de services médicaux pour répondre à tous vos besoins de santé, avec des équipements modernes et un personnel hautement qualifié.
+</p>
+  <div class="departement-grid">
+
+    {% for departement in departements %}
+    <div class="departement-card">
+      <div class="service-icon">
+        <i class="fas fa-heartbeat"></i>
+    </div>
+      <div class="departement-content">
+        <h2 class="departement-title">{{ departement.nom }}</h2>
+        <p class="departement-description">{{ departement.description }}</p>
+        <a href="{% url 'nos_medecins' %}" class="btn btn-primary">Voir les médecins</a>
+</div>
+    </div>
+    {% empty %}
+    <div class="departement-card">
+      <div class="departement-content">
+        <p>Aucun département trouvé.</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+</section>
+{% endblock %}

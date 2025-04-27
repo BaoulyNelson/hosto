@@ -24,4 +24,7 @@ urlpatterns = [
     path('', include('gestionhopital.urls')),  # Inclure les URLs de 
    
 ]
-if settings.DEBUG: urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# Serve static and media files during development
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

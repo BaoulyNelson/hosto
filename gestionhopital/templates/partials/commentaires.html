@@ -1,19 +1,29 @@
-<h2 style="text-align: center; font-family: Arial, sans-serif; color: #333; padding-bottom: 10px; border-bottom: 2px solid #007bff; display: inline-block; width: 100%;">Commentaires</h2>
-<div id="commentaires" class="commentaires-container">
-    {% for commentaire in commentaires %}
-        <div class="commentaire">
-            <p>
-                <strong>{{ commentaire.utilisateur.username }} a dit</strong>:
-                <span>{{ commentaire.texte }}</span>
-                <span class="commentaire-date">
-                    <small>Posté le {{ commentaire.date_postee|date:"D, d M Y H:i" }}</small>
-                </span>
-            </p>
-            {% if request.user.is_superuser %}
-                <a href="{% url 'supprimer_commentaire' commentaire.id %}" class="btn btn-danger btn-sm">Supprimer</a>
-            {% endif %}
+<section class="section testimonials">
+    <div class="container">
+        <h2 class="section-title">Témoignages</h2>
+
+        <div class="testimonials-container">
+            {% for commentaire in commentaires %}
+                <div class="testimonial-slide">
+                    <p class="testimonial-text">"{{ commentaire.texte }}"</p>
+                    <h4 class="testimonial-author">{{ commentaire.utilisateur.username }}</h4>
+                    <p class="testimonial-role">{{ commentaire.role }}</p>
+                </div>
+                
+            {% empty %}
+                <div class="testimonial-slide">
+                    <p class="text-center text-muted">Aucun commentaire disponible.</p>
+                </div>
+            {% endfor %}
         </div>
-    {% empty %}
-        <p>Aucun commentaire disponible.</p>
-    {% endfor %}
-</div>
+
+        <div class="testimonial-controls">
+            <div class="testimonial-btn prev-btn">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="testimonial-btn next-btn">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+</section>

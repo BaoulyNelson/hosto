@@ -4,54 +4,25 @@
 {% block content %}
 
 
-<div class="container mt-5">
-  <div class="hero">
-    <h1>Bienvenue a l'Hôpital</h1>
-    <p>Utilisez le menu pour accéder aux différentes sections.</p>
+<!-- Hero Section -->
+<section class="hero">
+  <div class="container">
+      <div class="hero-content">
+          <h1 class="hero-title">Votre santé est notre priorité</h1>
+          <p class="hero-text">L'Hôpital de l'Université d'État d'Haïti (HUEH) est dévoué à fournir des soins médicaux de qualité supérieure à tous les patients. Notre équipe de professionnels qualifiés est à votre service 24h/24 et 7j/7.</p>
+          <a href="{% url 'departements' %}" class="btn btn-primary btn-lg rounded-pill shadow">
+            <i class="fas fa-stethoscope me-2"></i> Découvrir nos services
+        </a>
+        
+      </div>
   </div>
+</section>
 
-  <ul class="list-group">
-    <li class="list-group-item">
-      <a href="{% url 'ajouter_entite' 'patient' %}">Ajouter un patient</a>
-    </li>
-    <li class="list-group-item">
-      <a href="{% url 'ajouter_entite' 'medecin' %}">Ajouter un médecin</a>
-    </li>
-    <li class="list-group-item">
-      <a href="{% url 'ajouter_entite' 'consultation' %}"
-        >Ajouter une consultation</a
-      >
-    </li>
-    <li class="list-group-item">
-      <a href="{% url 'ajouter_entite' 'prescription' %}"
-        >Ajouter une prescription</a
-      >
-    </li>
-    <li class="list-group-item">
-      <a href="{% url 'ajouter_entite' 'dossier' %}">Ajouter un dossier</a>
-    </li>
 
-    <li class="list-group-item">
-      <a href="{% url 'patients_list' %}">Voir la liste des patients</a>
-  </li>
-  <li class="list-group-item">
-      <a href="{% url 'medecins_list' %}">Voir la liste des médecins</a>
-  </li>
-  <li class="list-group-item">
-      <a href="{% url 'consultations_list' %}">Voir la liste des consultations</a>
-  </li>
-  <li class="list-group-item">
-      <a href="{% url 'prescriptions_list' %}">Voir la liste des prescriptions</a>
-  </li>
-  <li class="list-group-item">
-      <a href="{% url 'dossiers_list' %}">Voir la liste des dossiers</a>
-  </li>
-  </ul>
-</div>
-
+  
+{% include "partials/actualites.html" %}
+{% include "partials/qui.html" %}
 {% include "partials/commentaires.html" %}
 
-
-<script src="{% static 'js/recherche.js' %}"></script>
 
 {% endblock %}

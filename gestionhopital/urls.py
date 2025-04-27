@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index,recherche,ajouter_entite,modifier_entite,supprimer_entite,departements,ajouter_commentaire,supprimer_commentaire,soumettre_demande,merci,faire_don,process_don
+from .views import index,recherche_globale,ajouter_entite,modifier_entite,supprimer_entite,departements,ajouter_commentaire,supprimer_commentaire,merci,faire_don,process_don
 # Importation des vues de Django pour la gestion de l'authentification
 from . import views
 
@@ -13,8 +13,11 @@ urlpatterns = [
     
     # Page de déconnexion
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('confirmer-deconnexion/', views.confirmer_deconnexion, name='confirmer_deconnexion'),
+
     # Exemple de route pour le profil de l'utilisateur
-    path('accounts/profile/', views.profile, name='user_profile'),
+    path('profile/', views.profile, name='profile'),
+    path('apropos/', views.apropos, name='apropos'),
 
     # Changer de mot de passe
     path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
@@ -38,15 +41,16 @@ urlpatterns = [
     ), name='password_reset_complete'),
 
 
-    path('patients/', views.liste_entites_generique, {'type_entite': 'patient', 'template_name': 'liste_patients.html'}, name='patients_list'),
-    path('medecins/', views.liste_entites_generique, {'type_entite': 'medecin', 'template_name': 'liste_medecins.html'}, name='medecins_list'),
-    path('consultations/', views.liste_entites_generique, {'type_entite': 'consultation', 'template_name': 'liste_consultations.html'}, name='consultations_list'),
-    path('prescriptions/', views.liste_entites_generique, {'type_entite': 'prescription', 'template_name': 'liste_prescriptions.html'}, name='prescriptions_list'),
-    path('dossiers/', views.liste_entites_generique, {'type_entite': 'dossier', 'template_name': 'liste_dossiers.html'}, name='dossiers_list'),
+    path('patients/', views.liste_entites_generique, {'type_entite': 'patient', 'template_name': 'patients/liste_patients.html'}, name='patients_list'),
+    path('medecins/', views.liste_entites_generique, {'type_entite': 'medecin', 'template_name': 'medecins/liste_medecins.html'}, name='medecins_list'),
+    path('consultations/', views.liste_entites_generique, {'type_entite': 'consultation', 'template_name': 'consultations/liste_consultations.html'}, name='consultations_list'),
+    path('prescriptions/', views.liste_entites_generique, {'type_entite': 'prescription', 'template_name': 'prescriptions/liste_prescriptions.html'}, name='prescriptions_list'),
+    path('dossiers/', views.liste_entites_generique, {'type_entite': 'dossier', 'template_name': 'dossiers/liste_dossiers.html'}, name='dossiers_list'),
 
 
+    path('nos-medecins/', views.doctors_view, name='nos_medecins'),
 
-     # URL pour éditer le profil utilisateur
+    # URL pour éditer le profil utilisateur
     path('edit_profile/', views.edit_profile, name='edit_profile'),  # URL pour modifier le profil
 
     path('ajouter/<str:type_entite>/', ajouter_entite, name='ajouter_entite'),
@@ -55,7 +59,7 @@ urlpatterns = [
     
     path('supprimer/<str:type_entite>/<int:entite_id>/', supprimer_entite, name='supprimer_entite'),
 
-    path('soumettre-demande/',soumettre_demande, name='soumettre_demande'),
+ 
     path('merci/', merci, name='merci'),
     path('departements/', departements, name='departements'),
     
@@ -65,8 +69,9 @@ urlpatterns = [
 
     path('supprimer_commentaire/<int:commentaire_id>/', supprimer_commentaire, name='supprimer_commentaire'),
 
+    path('contact/', views.contact_view, name='contact'),
+    path('contact/success/', views.contact_success_view, name='contact_success'),
 
-    path('recherche/', recherche, name='recherche'),  # Ajouter cette ligne
-  
-
+    # ------------------- Recherche Globale -------------------
+    path('recherche/', views.recherche_globale, name='recherche_globale'),
 ]

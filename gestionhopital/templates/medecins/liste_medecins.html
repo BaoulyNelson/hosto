@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Liste des Médecins{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h2 class="text-center mb-4 ">Liste des Médecins</h2>
+
+  {% if user.is_authenticated %}
+    <div class="d-flex justify-content-end pt-5">
+      {% if user.is_superuser %}
+        <a href="{% url 'ajouter_entite' 'medecin' %}" class="btn btn-success btn-sm" title="Ajouter un médecin">
+          <i class="fas fa-user-plus"></i> Ajouter un Médecin
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="table-responsive">
+    <table class="table table-hover table-striped align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Sexe</th>
+          <th>Téléphone</th>
+          <th>Adresse</th>
+          <th>Email</th>
+          <th>Spécialité</th>
+          {% if user.is_authenticated %}
+            <th>Actions & Commentaires</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for medecin in medecins %}
+          <tr>
+            <td>{{ medecin.nom }}</td>
+            <td>{{ medecin.prenom }}</td>
+            <td>{{ medecin.sexe }}</td>
+            <td>{{ medecin.tel }}</td>
+            <td>{{ medecin.adresse }}</td>
+            <td>{{ medecin.email }}</td>
+            <td>{{ medecin.specialite }}</td>
+
+            {% if user.is_authenticated %}
+              <td>
+                <div class="d-flex flex-wrap gap-2">
+                  {% if user.is_superuser %}
+                    <a href="{% url 'modifier_entite' 'medecin' medecin.id %}" class="btn btn-warning btn-sm" title="Modifier">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'supprimer_entite' 'medecin' medecin.id %}" class="btn btn-danger btn-sm" title="Supprimer">
+                      <i class="fas fa-trash-alt"></i>
+                    </a>
+                  {% endif %}
+                  <a href="{% url 'ajouter_commentaire' content_type.id medecin.id %}" class="btn btn-info btn-sm" title="Ajouter un commentaire">
+                    <i class="fas fa-comment"></i>
+                  </a>
+                </div>
+              </td>
+            {% endif %}
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="8" class="text-center text-muted py-3">Aucun médecin trouvé.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {# Pagination si besoin #}
+  {% if medecins.has_other_pages %}
+    <nav aria-label="Pagination">
+      <ul class="pagination justify-content-center mt-4">
+        {% if medecins.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ medecins.previous_page_number }}" aria-label="Précédent">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&laquo;</span>
+          </li>
+        {% endif %}
+
+        {% for num in medecins.paginator.page_range %}
+          {% if medecins.number == num %}
+            <li class="page-item active">
+              <span class="page-link">{{ num }}</span>
+            </li>
+          {% elif num > medecins.number|add:'-3' and num < medecins.number|add:'3' %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+
+        {% if medecins.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ medecins.next_page_number }}" aria-label="Suivant">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&raquo;</span>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+
+  <div class="text-center mt-4">
+    <a href="{% url 'index' %}" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Retour
+    </a>
+  </div>
+</div>
+{% endblock %}
